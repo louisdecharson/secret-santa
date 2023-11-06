@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.simplecss.org/simple.min.css"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+            rel="stylesheet"
+            href="./public/assets/css/santa.css"
+            type="text/css"
+            media="screen"
+        />
+        <title>Create a Secret Santa 🎁</title>
+    </head>
+    <body>
+        <div class="container">
+            <div id="create" style="display: block">
+                <h1>Create a Secret Santa 🎁</h1>
+                <div class="text-gold italic">Christmas is coming ❄️!</div>
+                <form method="POST" id="santaForm">
+                    <p>
+                        <label>Give it a name 📍</label>
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Name (optional)"
+                        />
+                    </p>
+                    <div id="participants">
+                        <h4>Who is participating 🕺 ?</h4>
+                        <span id="participants_end"></span>
+                    </div>
+                    <button type="button" onclick="createParticipant()">
+                        Add participant
+                    </button>
+                    <p>
+                        <label>Number of presents per participant</label>
+                        <input type="number" name="numberOfPresent" />
+                    </p>
+                    <p class="italic text-gold" id="error"></p>
+                    <div class="button-container">
+                        <button
+                            type="button"
+                            value="save"
+                            onclick="submitSantaForm()"
+                        >
+                            Create
+                        </button>
+                        <button
+                            class="alert"
+                            type="reset"
+                            onclick="this.form.reset();"
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div id="view" style="display: none">
+                <h1>Oh Oh Oh Santa is coming 🎉 !</h1>
+                <div class="santaField" id="nameDisplay" style="display: none">
+                    <span>Secret Santa Name: </span>
+                    <span id="santaName"></span>
+                </div>
+                <div class="santaField">
+                    <span>Secret Santa Id: </span
+                    ><span class="text-gold" id="santaId"></span>
+                </div>
+                <div>
+                    <h4>Participants ☃️</h4>
+                    <div class="text-gold italic" id="nbParticipants"></div>
+                    <ul id="santaParticipants"></ul>
+                </div>
+                <div>
+                    <h4>Presents 🎁</h4>
+                    <div
+                        class="text-gold italic"
+                        id="santaNumberOfPresent"
+                    ></div>
+                    <ul id="santaPresents"></ul>
+                </div>
+                <div class="button-container">
+                    <button type="button" onclick="shareSanta()">
+                        Share Santa
+                    </button>
+                </div>
+                <div class="text-gold italic" id="shareSantaText"></div>
+            </div>
+            <script
+                type="text/javascript"
+                src="./public/assets/js/create-santa.js"
+            ></script>
+        </div>
+    </body>
+</html>

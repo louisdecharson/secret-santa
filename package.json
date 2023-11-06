@@ -1,15 +1,30 @@
 {
-  "name": "secret-santa",
-  "version": "1.0.50",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
-  },
-  "dependencies": {
-    "elysia": "latest"
-  },
-  "devDependencies": {
-    "bun-types": "latest"
-  },
-  "module": "src/index.js"
+    "name": "secret-santa",
+    "version": "1.0.50",
+    "scripts": {
+        "start": "bun run src/index.ts",
+        "dev": "bun run --watch src/index.ts",
+        "test": "tap run"
+    },
+    "dependencies": {
+        "@elysiajs/html": "^0.7.3",
+        "@elysiajs/static": "^0.7.1",
+        "@prisma/client": "^5.5.2",
+        "elysia": "^0.7.21",
+        "prisma": "^5.5.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.18.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.34",
+        "@types/react-dom": "^18.2.14",
+        "bun-types": "latest",
+        "node-ts": "^6.0.1",
+        "tap": "^18.5.7"
+    },
+    "module": "src/index.js",
+    "trustedDependencies": [
+        "@prisma/client"
+    ]
 }

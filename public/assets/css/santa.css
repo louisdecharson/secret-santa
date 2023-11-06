@@ -1,0 +1,108 @@
+:root,
+::backdrop {
+    --text: #ffffff;
+    --bg: #375937;
+    --alert-color: #ffffff;
+    --alert-bg-color: #999999;
+    --muted-color: #bbbbbb;
+    --accent: #e33c3b;
+    --gold: #e0c570;
+}
+@media (prefers-color-scheme: dark) {
+    :root,
+    ::backdrop {
+        --alert-color: #999999;
+        --alert-bg-color: #eeeeee;
+    }
+}
+.container {
+    margin: 2rem auto;
+}
+body {
+    max-width: 41rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+button.alert {
+    background-color: var(--alert-bg-color);
+    color: var(--alert-color);
+    border-color: var(--alert-bg-color);
+}
+.santaField {
+    font-size: 1rem;
+}
+.text-gold {
+    color: var(--gold);
+}
+.text-muted {
+    color: var(--muted-color);
+}
+.italic {
+    font-style: italic;
+}
+h4 {
+    margin-bottom: 0.1rem;
+}
+input {
+    margin-right: 0.5rem;
+}
+button {
+    color: var(--text) !important;
+}
+.button {
+    color: var(--text);
+}
+a.button {
+    color: var(--text) !important;
+}
+.card {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin: 0 auto;
+}
+.participant-card {
+    border-radius: 8px;
+    padding: 10px;
+    margin: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.participant-card:hover {
+    background-color: var(--gold);
+    border-color: var(--gold);
+    color: var(--accent) !important;
+}
+.participant-list {
+    display: flex;
+    flex-direction: column;
+}
+a.nodecorate {
+    text-decoration: none;
+    color: var(--text);
+}
+.button {
+    text-align: center;
+}
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.delete-button {
+    margin: 0.5rem;
+}
+
+@media (max-width: 720px) {
+    .button-container {
+        flex-direction: column;
+    }
+    .delete-button {
+        flex: 0;
+    }
+}

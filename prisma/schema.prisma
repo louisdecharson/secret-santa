@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Santa {
+  id Int @id @default(autoincrement())
+  name String?
+  participants Participant[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  numberOfPresent Int @default(1)
+  presents Present[]
+  // owner User @relation(fields: [ownerId], references: [id])
+  // ownerId Int
+}
+
+model Participant {
+  id Int @id @default(autoincrement())
+  name String
+  santa Santa @relation(fields: [santaId], references: [id])
+  santaId Int
+  presentsReceived Present[] @relation(name: "presentTo")
+  presentsGiven Present[] @relation(name: "presentFrom")
+  user User? @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+model Present {
+  from Participant @relation(fields: [fromParticipantId], references: [id], name: "presentFrom")
+  fromParticipantId Int
+  to Participant @relation(fields: [toParticipantId], references: [id], name: "presentTo")
+  toParticipantId Int
+  santa Santa @relation(fields: [santaId], references: [id])
+  santaId Int
+  @@id([fromParticipantId, toParticipantId, santaId])
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name String
+  password String
+  participants Participant[]
+}
