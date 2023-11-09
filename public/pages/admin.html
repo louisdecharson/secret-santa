@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.simplecss.org/simple.min.css"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+            rel="stylesheet"
+            href="./public/assets/css/santa.css"
+            type="text/css"
+            media="screen"
+        />
+        <title>Secret Santa 🎁 - Admin panel</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Secret Santa - Admin panel</h1>
+            <h2>List of santas</h2>
+            <table id="santas">
+                <tr>
+                    <th>Santa Id</th>
+                    <th>Name</th>
+                    <th>Date creation</th>
+                    <th>Nb of participants</th>
+                    <th>Nb of presents</th>
+                </tr>
+            </table>
+        </div>
+        <script>
+            const $ = (selector) => document.querySelector(selector);
+            const urlParams = new URLSearchParams(window.location.search);
+            let santaId = urlParams.get('santaId');
+            const baseURL = location.protocol + '//' + location.host;
+            fetch(`${baseURL}/santa`)
+                .then((res) => res.json())
+                .then((santas) => {
+                    let innerTable = '';
+                    for (const [_, santa] of santas.entries()) {
+                        innerTable += `
+<tr>
+<td><a href=${baseURL}/create?santaId=${santa.id}>${santa.id}</a></td>
+<td>${santa.name || 'No name'}</td>
+<td>${santa.createdAt}</td>
+<td>${santa.participants.length}</td>
+<td>${santa.numberOfPresent}</td>
+</tr>
+                        `;
+                    }
+                    $('#santas').innerHTML += innerTable;
+                });
+        </script>
+    </body>
+</html>

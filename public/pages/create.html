@@ -37,8 +37,12 @@
                         Add participant
                     </button>
                     <p>
-                        <label>Number of presents per participant</label>
+                        <label>Number of presents per participant 🎁</label>
                         <input type="number" name="numberOfPresent" />
+                    </p>
+                    <p>
+                        <label>Add a budget (optional) 🤑</label>
+                        <input type="text" name="budget" />
                     </p>
                     <p class="italic text-gold" id="error"></p>
                     <div class="button-container">
@@ -60,22 +64,27 @@
                 </form>
             </div>
             <div id="view" style="display: none">
-                <h1>Oh Oh Oh Santa is coming 🎉 !</h1>
-                <div class="santaField" id="nameDisplay" style="display: none">
-                    <span>Secret Santa Name: </span>
-                    <span id="santaName"></span>
+                <h1>Ho-ho-ho Santa is coming 🎉 !</h1>
+                <div id="nameDisplay" style="display: none">
+                    <span>Welcome to Secret Santa </span>
+                    <span id="santaName" class="text-gold"></span>
                 </div>
-                <div class="santaField">
+                <div class="santaField italic">
                     <span>Secret Santa Id: </span
                     ><span class="text-gold" id="santaId"></span>
                 </div>
+                <div id="budgetDisplay" style="display: none">
+                    <span>Budget 💸: </span>
+                    <span class="text-gold" id="santaBudget"></span>
+                </div>
+
                 <div>
-                    <h4>Participants ☃️</h4>
+                    <h4>Santa's Team ☃️</h4>
                     <div class="text-gold italic" id="nbParticipants"></div>
                     <ul id="santaParticipants"></ul>
                 </div>
                 <div>
-                    <h4>Presents 🎁</h4>
+                    <h4>Who gives to whom 🎁</h4>
                     <div
                         class="text-gold italic"
                         id="santaNumberOfPresent"

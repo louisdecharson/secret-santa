@@ -43,19 +43,22 @@ COPY --link . .
 FROM base
 
 RUN apt-get update -qq && \
-    apt-get install -y openssl
+    apt-get install --no-install-recommends -y openssl && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built application
-COPY --from=build /app /app
+RUN mkdir /app/node_modules
 COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
+RUN rm -rf node_modules
+COPY --from=build /app /app
 
 ARG NODE_VERSION=20
 RUN apt update \
     && apt install -y curl
-RUN curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n \
-    && bash n $NODE_VERSION \
-    && rm n \
-    && npm install -g n
+RUN curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n #\
+    # && bash n $NODE_VERSION \
+    # && rm n \
+    # && npm install -g n
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/app/docker-entrypoint"]

@@ -20,11 +20,11 @@ const app = new Elysia().use(html()).use(staticPlugin()).listen({
 });
 
 app.get('/', () => Bun.file('public/index.html').text());
+app.get('/admin', () => Bun.file('public/pages/admin.html').text());
 app.get('/create', () => Bun.file('public/pages/create.html').text());
 app.post('/create', async ({ set, body }) => {
     const createdSanta = await createSanta(body);
     return createdSanta;
-    // set.redirect = `/join?id=${createdSanta.id}`;
 });
 app.get(
     '/join',
@@ -44,15 +44,96 @@ app.get(
         })
     }
 );
-
+app.get('/santa', async () => {
+    return db.santa.findMany({
+        include: {
+            participants: true,
+            presents: true
+        }
+    });
+});
 app.get('/santa/:id', async ({ params: { id } }) => {
     return db.santa.findUnique({
         where: {
             id: parseInt(id)
         },
         include: {
-            participants: true,
+            participants: {
+                include: {
+                    wishList: true
+                }
+            },
             presents: true
+        }
+    });
+});
+
+app.get('/participant', async () => {
+    return db.participant.findMany({
+        include: {
+            presentsReceived: true,
+            presentsGiven: true
+        }
+    });
+});
+app.get('/participant/:id', async ({ params: { id } }) => {
+    return db.participant.findUnique({
+        where: {
+            id: parseInt(id)
+        },
+        include: {
+            presentsReceived: true,
+            presentsGiven: true
+        }
+    });
+});
+
+app.get('/wish', async () => {
+    return db.wish.findMany({
+        include: {
+            participant: true
+        }
+    });
+});
+app.post('/wish', async ({ body }) => {
+    const createdWish = await db.participant.update({
+        where: { id: body.participantId },
+        data: {
+            wishList: {
+                create: [{ item: body.item }]
+            }
+        },
+        include: {
+            wishList: true
+        }
+    });
+    return createdWish;
+});
+
+app.get('/wish/:id', async ({ params: { id } }) => {
+    return db.wish.findUnique({
+        where: {
+            id: parseInt(id)
+        },
+        include: {
+            participant: true
+        }
+    });
+});
+app.delete('/wish/:id', async ({ params: { id } }) => {
+    const deleteWish = await db.wish.deleteMany({
+        where: {
+            id: parseInt(id)
+        }
+    });
+});
+app.put('/wish/:id', async ({ params: { id }, body }) => {
+    return db.wish.update({
+        where: {
+            id: parseInt(id)
+        },
+        data: {
+            item: body.item
         }
     });
 });
@@ -67,7 +148,8 @@ const createSanta = async (formData) => {
         participants: {
             create: []
         },
-        id: getRandomInteger()
+        id: getRandomInteger(),
+        budget: formData.budget || null
     };
     for (const [key, value] of Object.entries(formData)) {
         if (key.startsWith('participants_')) {

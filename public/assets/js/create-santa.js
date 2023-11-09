@@ -4,12 +4,12 @@ let santaId = urlParams.get('santaId');
 const baseURL = location.protocol + '//' + location.host;
 let numberOfParticpants = 0;
 const createParticipant = () => {
-    let participant_nb = numberOfParticpants + 1;
+    let participantNb = numberOfParticpants + 1;
     let html = `
-       <div class="input-container" id="participant_${participant_nb}">
-         <input type="text" name="participants_${participant_nb}_name" placeholder="Name"/>`;
-    if (participant_nb > 1) {
-        html += `<button class="delete-button" type="button" onclick="deleteParticipant(${participant_nb})">−</button>`;
+       <div class="input-container" id="participant_${participantNb}">
+         <input type="text" name="participants_${participantNb}_name" placeholder="Name"/>`;
+    if (participantNb > 1) {
+        html += `<button class="delete-button" type="button" onclick="deleteParticipant(${participantNb})">−</button>`;
     }
     html += '</div>';
     document
@@ -19,7 +19,7 @@ const createParticipant = () => {
 };
 
 const createSantaForm = () => {
-    createParticipant(1);
+    createParticipant();
 };
 const deleteParticipant = (participant_nb) => {
     document.getElementById(`participant_${participant_nb}`).remove();
@@ -51,6 +51,12 @@ const submitSantaForm = () => {
                 urlParams.set('santaId', createdSanta.id);
                 window.location.search = urlParams;
                 displaySanta(createdSanta);
+            })
+            .catch((error) => {
+                $(
+                    '#error'
+                ).innerHTML = `Internal server error when creating the santa. There is nothing you can do on your side unfortunately. Reach out to developers with the error message: ${error}`;
+                console.log(error);
             });
     } else {
         $('#error').innerHTML = errorForm;
@@ -59,9 +65,13 @@ const submitSantaForm = () => {
 const displaySanta = (santaInfo) => {
     if (santaInfo.name) {
         $('#santaName').innerHTML = santaInfo.name;
-        $('#nameDisplay').style.display = 'compact';
+        $('#nameDisplay').style.display = 'block';
     } else {
         $('#nameDisplay').style.display = 'none';
+    }
+    if (santaInfo.budget) {
+        $('#santaBudget').innerHTML = santaInfo.budget;
+        $('#budgetDisplay').style.display = 'block';
     }
     $('#santaId').innerHTML = santaInfo.id;
     santaId = santaInfo.id;
@@ -86,7 +96,6 @@ const displaySanta = (santaInfo) => {
 };
 const shareSanta = () => {
     let santaURL = `${baseURL}/join?id=${santaId}`;
-    console.log(santaURL);
     navigator.clipboard.writeText(santaURL);
     $(
         '#shareSantaText'

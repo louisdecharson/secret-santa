@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Page from './components/Page';
 import EnterId from './components/EnterId';
 import PickParticipant from './components/PickParticipant';
@@ -14,7 +14,9 @@ export default function App({ id }: AppProps) {
     const [santaId, setSantaId] = useState(false);
     const [viewPresent, setViewPresent] = useState(false);
     const [participantName, setParticipantName] = useState(null);
+    const [participantId, setParticipantId] = useState(null);
     const [giveToList, setGiveToList] = useState(null);
+    const [wishList, setWishList] = useState([]);
     const getBaseURL = () => {
         return location.protocol + '//' + location.host;
     };
@@ -25,22 +27,38 @@ export default function App({ id }: AppProps) {
         return santaInfo;
     };
     let _id = id;
-    const handleParticipantClick = (participantId) => {
-        document.querySelector('.card').style.display = 'none';
-        let listPresents = [];
-        const participantIdToName = {};
-        for (const participant of santaInfo.participants) {
-            participantIdToName[participant.id] = participant.name;
-        }
-        setParticipantName(participantIdToName[participantId]);
-        for (const present of santaInfo.presents) {
-            if (present.fromParticipantId === participantId) {
-                listPresents.push(participantIdToName[present.toParticipantId]);
+    const handleParticipantClick = useCallback(
+        (id) => {
+            setParticipantId(id);
+            document.querySelector('.card').style.display = 'none';
+            let listGiveToBuddies = [];
+            const participantIdToName = {};
+            for (const participant of santaInfo.participants) {
+                participantIdToName[participant.id] = participant.name;
             }
-        }
-        setGiveToList(listPresents);
-        setViewPresent(true);
-    };
+            setParticipantName(participantIdToName[id]);
+            const giveToIds = santaInfo.presents
+                .filter((present) => present.fromParticipantId == id)
+                .map((present) => present.toParticipantId);
+            listGiveToParticipants = santaInfo.participants.filter((p) =>
+                giveToIds.includes(p.id)
+            );
+            setGiveToList(listGiveToParticipants);
+            setViewPresent(true);
+            const wishListTemp = santaInfo.participants.filter(
+                (p) => p.id === id
+            )[0].wishList;
+            setWishList(wishListTemp);
+        },
+        [
+            participantId,
+            participantName,
+            giveToList,
+            viewPresent,
+            wishList,
+            santaInfo
+        ]
+    );
     const joinSanta = () => {
         _id = document.querySelector('#santaId').value;
         fetchSantaInformation(_id).then((santaInfo) => {
@@ -97,8 +115,10 @@ export default function App({ id }: AppProps) {
             )}
             {viewPresent ? (
                 <ViewPresent
+                    participantId={participantId}
                     participantName={participantName}
                     giveToList={giveToList}
+                    initialWishList={wishList}
                 ></ViewPresent>
             ) : null}
         </Page>

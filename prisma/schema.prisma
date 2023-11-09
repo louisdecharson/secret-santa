@@ -18,6 +18,7 @@ model Santa {
   updatedAt DateTime @updatedAt
   numberOfPresent Int @default(1)
   presents Present[]
+  budget String?
   // owner User @relation(fields: [ownerId], references: [id])
   // ownerId Int
 }
@@ -31,6 +32,8 @@ model Participant {
   presentsGiven Present[] @relation(name: "presentFrom")
   user User? @relation(fields: [userId], references: [id])
   userId Int?
+  wishList Wish[] @relation(name: "participant")
+  wishLocked Wish[] @relation(name: "lockedBy")
 }
 
 model Present {
@@ -49,4 +52,14 @@ model User {
   name String
   password String
   participants Participant[]
+}
+
+model Wish {
+    id Int @id @default(autoincrement())
+    item String
+    participant Participant @relation(fields: [participantId], references: [id], name: "participant")
+    participantId  Int
+    locked Boolean @default(false)
+    lockedBy Participant? @relation(fields: [lockedById], references: [id], name: "lockedBy")
+    lockedById Int?
 }
