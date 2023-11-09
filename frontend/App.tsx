@@ -8,6 +8,13 @@ interface AppProps {
     id: string;
 }
 
+function SantaName({ santaName }) {
+    if (!santaName) {
+        return;
+    }
+    return <h3 className="center">🎄 {santaName} 🎄</h3>;
+}
+
 export default function App({ id }: AppProps) {
     const [santaInfo, setSantaInfo] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -108,10 +115,13 @@ export default function App({ id }: AppProps) {
     return (
         <Page>
             {santaId ? (
-                <PickParticipant
-                    participants={santaInfo.participants}
-                    handleParticipantClick={handleParticipantClick}
-                ></PickParticipant>
+                <>
+                    <SantaName santaName={santaInfo.name}></SantaName>
+                    <PickParticipant
+                        participants={santaInfo.participants}
+                        handleParticipantClick={handleParticipantClick}
+                    ></PickParticipant>
+                </>
             ) : (
                 <EnterId joinSanta={() => joinSanta()}></EnterId>
             )}
