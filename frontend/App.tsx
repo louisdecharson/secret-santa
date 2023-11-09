@@ -17,6 +17,7 @@ export default function App({ id }: AppProps) {
     const [participantId, setParticipantId] = useState(null);
     const [giveToList, setGiveToList] = useState(null);
     const [wishList, setWishList] = useState([]);
+    const [budget, setBudget] = useState(null);
     const getBaseURL = () => {
         return location.protocol + '//' + location.host;
     };
@@ -49,6 +50,7 @@ export default function App({ id }: AppProps) {
                 (p) => p.id === id
             )[0].wishList;
             setWishList(wishListTemp);
+            setBudget(santaInfo.budget);
         },
         [
             participantId,
@@ -119,6 +121,7 @@ export default function App({ id }: AppProps) {
                     participantName={participantName}
                     giveToList={giveToList}
                     initialWishList={wishList}
+                    budget={budget}
                 ></ViewPresent>
             ) : null}
         </Page>

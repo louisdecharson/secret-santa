@@ -88,7 +88,8 @@ export default function ViewPresent({
     participantId,
     participantName,
     giveToList,
-    initialWishList
+    initialWishList,
+    budget
 }: ViewPresentProps) {
     const [wishList, setWishList] = useState(initialWishList);
     const listBuddies = giveToList.map((participant) => (
@@ -161,6 +162,16 @@ export default function ViewPresent({
                 🎁 You need to find a present for the following person:
             </span>
             <ul className="buddies-list">{listBuddies}</ul>
+            {budget ? (
+                <div id="budgetDisplay">
+                    <span>Budget 💸: </span>
+                    <span className="text-gold" id="santaBudget">
+                        {budget}
+                    </span>
+                </div>
+            ) : (
+                ''
+            )}
             <h4>Your wish list</h4>
             <span className="text-gold italic">
                 Help your Santa find the right present

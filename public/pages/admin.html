@@ -26,6 +26,7 @@
                     <th>Date creation</th>
                     <th>Nb of participants</th>
                     <th>Nb of presents</th>
+                    <th>Budget</th>
                 </tr>
             </table>
         </div>
@@ -46,6 +47,7 @@
 <td>${santa.createdAt}</td>
 <td>${santa.participants.length}</td>
 <td>${santa.numberOfPresent}</td>
+<td>${santa.budget || 'No budget'}</td>
 </tr>
                         `;
                     }
