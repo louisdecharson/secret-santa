@@ -132,9 +132,7 @@ app.put('/wish/:id', async ({ params: { id }, body }) => {
         where: {
             id: parseInt(id)
         },
-        data: {
-            item: body.item
-        }
+        data: body
     });
 });
 

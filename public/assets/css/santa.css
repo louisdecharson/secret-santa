@@ -15,6 +15,9 @@
         --alert-bg-color: #eeeeee;
     }
 }
+.ml {
+    margin-left: 1rem;
+}
 .container {
     margin: 2rem auto;
 }
@@ -94,9 +97,7 @@ a.nodecorate {
     align-items: center;
     gap: 0.5rem;
 }
-.delete-button {
-    margin: 0.5rem;
-}
+
 table,
 th,
 tr,
@@ -117,9 +118,14 @@ td {
     margin-top: 0.5rem;
 }
 .buddies-list {
+    list-style: none;
     padding-left: 0;
+}
+.wishes-list {
+    padding-left: 1rem;
     list-style: none;
 }
+
 .buddy {
     border-bottom: 1px solid var(--border);
     margin-bottom: 0.5rem;
@@ -128,7 +134,19 @@ td {
 .center {
     text-align: center;
 }
-
+.wish-locked {
+    color: var(--muted-color);
+    text-decoration: line-through;
+    text-decoration-color: var(--muted-color);
+}
+.wish-lock {
+    font-size: 0.8rem;
+    padding: 0.2rem;
+    margin-left: 0.5rem;
+    margin-bottom: 0 rem;
+    margin-top: 0rem;
+    margin-right: 0.5rem;
+}
 @media (max-width: 720px) {
     .button-container {
         flex-direction: column;

@@ -7,9 +7,10 @@ type ViewPresentProps = {
     participantName: string;
     giveToList: string[];
     wishList: Wish[];
+    onWishCheck: (wishId: string, participantId: string) => void;
 };
 
-function WishItem({ id, onChange, onDelete, item }) {
+function WishItem({ id, onChange, onDelete, item, locked }) {
     const [visible, setVisible] = useState(true);
     const [debouncedText, setDebouncedText] = useState(item);
 
@@ -28,11 +29,13 @@ function WishItem({ id, onChange, onDelete, item }) {
                 name={`wish_${id}`}
                 value={debouncedText}
                 onChange={(e) => setDebouncedText(e.target.value)}
+                disabled={locked}
             />
             <button
                 className="delete-button"
                 type="button"
                 onClick={() => onDelete(id)}
+                disabled={locked}
             >
                 Delete
             </button>
@@ -49,6 +52,7 @@ function WishList({ wishList, onWishChange, onWishDelete, loading = false }) {
                     onChange={onWishChange}
                     onDelete={onWishDelete}
                     item={wish.item}
+                    locked={wish.locked}
                 />
             ))}
         </div>
@@ -84,6 +88,57 @@ function AddWishForm({ onWishSubmit }) {
     );
 }
 
+function WishToGive({ initialWish, participantId }) {
+    const [wish, setWish] = useState(initialWish);
+    const [locked, setLocked] = useState(wish.locked || false);
+    const [disabled, setDisabled] = useState(false);
+
+    const baseURL = getBaseURL();
+    const wishURL = `${baseURL}/wish/${wish.id}`;
+
+    const onWishCheck = async () => {
+        const updatedWish = {
+            id: wish.id,
+            locked: !locked,
+            lockedById: participantId
+        };
+        setLocked(!locked);
+        await fetch(wishURL, {
+            method: 'put',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedWish)
+        }).then((res) => res.json());
+        setWish({ ...wish, ...updatedWish });
+    };
+
+    useEffect(() => {
+        setDisabled(locked && participantId !== wish.lockedById);
+    });
+
+    return (
+        <li key={wish.id}>
+            <span className={locked ? 'wish-locked' : ''}>
+                🎁 - {wish.item}
+            </span>
+            {disabled ? (
+                <span className="text-muted ml">
+                    (Gift already locked by another Santa)
+                </span>
+            ) : (
+                <button
+                    className={locked ? 'wish-lock alert' : 'wish-lock '}
+                    type="checkbox"
+                    id={wish.id}
+                    defaultChecked={locked}
+                    onClick={() => onWishCheck()}
+                >
+                    {!locked ? 'Reserve gift 🔒' : 'Unreserve gift 🔓'}
+                </button>
+            )}
+        </li>
+    );
+}
+
 export default function ViewPresent({
     participantId,
     participantName,
@@ -92,15 +147,19 @@ export default function ViewPresent({
     budget
 }: ViewPresentProps) {
     const [wishList, setWishList] = useState(initialWishList);
+
     const listBuddies = giveToList.map((participant) => (
         <li className="buddy" key={participant.id}>
             ☃️ {participant.name}
             {participant.wishList.length > 0 ? (
                 <div className="text-gold italic">
                     {participant.name}'s wish list:
-                    <ul>
+                    <ul className="wishes-list">
                         {participant.wishList.map((wish) => (
-                            <li key={wish.id}>{wish.item}</li>
+                            <WishToGive
+                                initialWish={wish}
+                                participantId={participantId}
+                            />
                         ))}
                     </ul>
                 </div>
@@ -154,6 +213,7 @@ export default function ViewPresent({
                 setWishList(updatedParticipant.wishList);
             });
     };
+
     return (
         <div className="action">
             <h3>Welcome to Secret Santa {participantName} 🦌!</h3>
