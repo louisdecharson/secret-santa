@@ -11,8 +11,13 @@
 @media (prefers-color-scheme: dark) {
     :root,
     ::backdrop {
+        --text: #efefef;
+        --bg: #003d00; /* A darker background color for dark mode */
         --alert-color: #999999;
-        --alert-bg-color: #eeeeee;
+        --alert-bg-color: #333333;
+        --muted-color: #999999; /* Adjusted for better visibility in dark mode */
+        --accent: #ff5252; /* A vibrant red for accent in dark mode */
+        --gold: #d4af37; /* A slightly darker gold color */
     }
 }
 .ml {
