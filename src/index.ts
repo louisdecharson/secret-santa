@@ -46,6 +46,11 @@ app.get(
 );
 app.get('/santa', async () => {
     return db.santa.findMany({
+        orderBy: [
+            {
+                createdAt: 'desc'
+            }
+        ],
         include: {
             participants: true,
             presents: true
