@@ -54,6 +54,16 @@ h4 {
 input {
     margin-right: 0.5rem;
 }
+button:disabled {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+input:disabled {
+    background-color: inherit !important;
+    border-color: var(--border);
+    color: var(--text) !important;
+    opacity: 1 !important;
+}
 button {
     color: var(--text) !important;
 }
