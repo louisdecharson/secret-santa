@@ -27,6 +27,7 @@
                     <th>Nb of participants</th>
                     <th>Nb of presents</th>
                     <th>Budget</th>
+                    <th>Join</th>
                 </tr>
             </table>
         </div>
@@ -48,6 +49,7 @@
 <td>${santa.participants.length}</td>
 <td>${santa.numberOfPresent}</td>
 <td>${santa.budget || 'No budget'}</td>
+<td><a class="button" href=${baseURL}/join?id=${santa.id}>Join</a></td>
 </tr>
                         `;
                     }
