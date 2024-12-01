@@ -7,6 +7,7 @@
     --muted-color: #bbbbbb;
     --accent: #e33c3b;
     --gold: #e0c570;
+    --accent-hover: #003d00;
 }
 @media (prefers-color-scheme: dark) {
     :root,
@@ -14,10 +15,11 @@
         --text: #efefef;
         --bg: #003d00; /* A darker background color for dark mode */
         --alert-color: #999999;
-        --alert-bg-color: #333333;
+        --alert-bg-color: #444444;
         --muted-color: #999999; /* Adjusted for better visibility in dark mode */
-        --accent: #ff5252; /* A vibrant red for accent in dark mode */
+        --accent: #cd3700; /* A vibrant red for accent in dark mode */
         --gold: #d4af37; /* A slightly darker gold color */
+        --accent-hover: #375937;
     }
 }
 .ml {
