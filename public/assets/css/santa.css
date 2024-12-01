@@ -22,9 +22,7 @@
         --accent-hover: #375937;
     }
 }
-.ml {
-    margin-left: 1rem;
-}
+
 .container {
     margin: 2rem auto;
 }
@@ -51,6 +49,7 @@ button.alert {
     font-style: italic;
 }
 h4 {
+    margin-top: 0.1rem;
     margin-bottom: 0.1rem;
 }
 input {
@@ -179,4 +178,16 @@ td {
 }
 #allocateSantaButton {
     margin-top: 0.3rem;
+}
+.mb {
+    margin-bottom: 1rem;
+}
+.ml {
+    margin-left: 1rem;
+}
+.mt-5 {
+    margin-top: 0.5rem;
+}
+.mt {
+    margin-top: 1rem;
 }

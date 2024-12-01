@@ -217,13 +217,8 @@ export default function ViewPresent({
     return (
         <div className="action">
             <h3>Welcome to Secret Santa {participantName} 🦌!</h3>
-            <h4>Your buddies</h4>
-            <span className="text-gold italic">
-                🎁 You need to find a present for the following person:
-            </span>
-            <ul className="buddies-list">{listBuddies}</ul>
             {budget ? (
-                <div id="budgetDisplay">
+                <div className="mb" id="budgetDisplay">
                     <span>Budget 💸: </span>
                     <span className="text-gold" id="santaBudget">
                         {budget}
@@ -232,17 +227,26 @@ export default function ViewPresent({
             ) : (
                 ''
             )}
-            <h4>Your wish list</h4>
-            <span className="text-gold italic">
-                Help your Santa find the right present
-            </span>
-            <div className="wish-list-container">
-                <WishList
-                    wishList={wishList}
-                    onWishChange={onWishChange}
-                    onWishDelete={onWishDelete}
-                />
-                <AddWishForm onWishSubmit={onWishSubmit} />
+            <div className="rounded-div mb">
+                <h4>Your buddies</h4>
+                <span className="text-gold italic">
+                    🎁 You need to find a present for the following person:
+                </span>
+                <ul className="buddies-list mt-5">{listBuddies}</ul>
+            </div>
+            <div className="rounded-div">
+                <h4>Your wish list</h4>
+                <span className="text-gold italic">
+                    Help your Santa find the right present
+                </span>
+                <div className="wish-list-container">
+                    <WishList
+                        wishList={wishList}
+                        onWishChange={onWishChange}
+                        onWishDelete={onWishDelete}
+                    />
+                    <AddWishForm onWishSubmit={onWishSubmit} />
+                </div>
             </div>
         </div>
     );
