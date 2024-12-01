@@ -2,9 +2,15 @@ const $ = (selector) => document.querySelector(selector);
 const urlParams = new URLSearchParams(window.location.search);
 let santaId = urlParams.get('santaId');
 const baseURL = location.protocol + '//' + location.host;
-let numberOfParticpants = 0;
+$('#presents_allocation').style.display = 'none';
+let presentsAllocation, idToName;
+let presentsAllocated = false;
+
+// Functions
+// =========
+let numberOfParticipants = 0;
 const createParticipant = () => {
-    let participantNb = numberOfParticpants + 1;
+    let participantNb = numberOfParticipants + 1;
     let html = `
        <div class="input-container" id="participant_${participantNb}">
          <input type="text" name="participants_${participantNb}_name" placeholder="Name"/>`;
@@ -15,17 +21,119 @@ const createParticipant = () => {
     document
         .getElementById('participants_end')
         .insertAdjacentHTML('beforebegin', html);
-    numberOfParticpants += 1;
+    numberOfParticipants += 1;
+};
+const generateAllocation = () => {
+    $('#presents_allocation').style.display = 'none';
+
+    // reset allocation
+    $('#santaPresents_0').innerHTML = '';
+
+    const formData = getForm();
+    const errorForm = validateForm(formData);
+    if (errorForm.length === 0) {
+        const numberOfPresent = parseInt(formData.get('numberOfPresent'));
+        // get list of participants
+        const participantsIds = [];
+        idToName = {};
+        let participantId = 0;
+        for (const [key, value] of formData.entries()) {
+            if (key.startsWith('participants_')) {
+                participantsIds.push(participantId);
+                idToName[participantId] = value;
+                participantId += 1;
+            }
+        }
+        // define givers and receivers
+        presentsAllocation = allocatePresentToParticipants(
+            participantsIds,
+            numberOfPresent
+        );
+        for (const [giver, receivers] of Object.entries(presentsAllocation)) {
+            for (const receiver of receivers) {
+                $(
+                    '#santaPresents_0'
+                ).innerHTML += `<li>${idToName[giver]} gives to ${idToName[receiver]}</li>`;
+            }
+        }
+        $('#allocateSantaText').innerHTML =
+            'Not happy with the allocation ? Allocate Santas again';
+        $('#allocateSantaButton').innerHTML = '🔄 Reallocate Santas';
+        $('#presents_allocation').style.display = 'block';
+        presentsAllocated = true;
+    } else {
+        displayErrorForm(errorForm);
+    }
+};
+const allocatePresentToParticipants = (participants, numberOfPresent) => {
+    const allocation = {};
+    const receivers = [];
+    let allocationPossible = false;
+    const resetAllocation = () => {
+        receivers.length = 0;
+        for (const giver of participants) {
+            allocation[giver] = [];
+        }
+        for (let i = 0; i < numberOfPresent; i++) {
+            receivers.push(...participants.slice());
+        }
+        allocationPossible = true;
+    };
+
+    for (let i = 0; i < participants.length; i++) {
+        if (!allocationPossible) {
+            resetAllocation();
+        }
+        const giver = participants[i];
+
+        for (let j = 0; j < numberOfPresent; j++) {
+            let validReceivers = receivers.filter(
+                (receiver) =>
+                    receiver !== giver &&
+                    allocation[giver].indexOf(receiver) === -1
+            );
+
+            if (validReceivers.length === 0) {
+                // If there are no valid receivers for the current giver,
+                // reset and start again
+                j = -1;
+                allocationPossible = false;
+                break;
+            }
+
+            const randomIndex = Math.floor(
+                Math.random() * validReceivers.length
+            );
+            const receiver = validReceivers[randomIndex];
+            allocation[giver].push(receiver);
+            receivers.splice(receivers.indexOf(receiver), 1);
+        }
+        if (!allocationPossible) {
+            i = -1;
+        }
+    }
+
+    return allocation;
 };
 
+// Create form
 const createSantaForm = () => {
+    // initiate Santa with one participant
     createParticipant();
 };
+
+// Functions
 const deleteParticipant = (participant_nb) => {
     document.getElementById(`participant_${participant_nb}`).remove();
 };
 
-const validateSanta = (formData) => {
+// Validate & Submit
+const getForm = () => {
+    const form = $('#santaForm');
+    const formData = new FormData(form);
+    return formData;
+};
+const validateForm = (formData) => {
     let nbParticipants = 0;
     let nbPresents = parseInt(formData.get('numberOfPresent'));
     for (const [key, value] of formData.entries()) {
@@ -39,11 +147,18 @@ const validateSanta = (formData) => {
     }
     return '';
 };
+const displayErrorForm = (errorForm) => {
+    $('#error').innerHTML = errorForm;
+};
 
 const submitSantaForm = () => {
-    const form = $('#santaForm');
-    const formData = new FormData(form);
-    const errorForm = validateSanta(formData);
+    formData = getForm();
+    const errorForm = validateForm(formData);
+    if (!presentsAllocated) {
+        generateAllocation();
+    }
+    formData.append('presentsAllocation', JSON.stringify(presentsAllocation));
+    formData.append('idToName', JSON.stringify(idToName));
     if (errorForm.length === 0) {
         fetch(document.URL, { method: 'post', body: formData })
             .then((res) => res.json())
@@ -59,9 +174,10 @@ const submitSantaForm = () => {
                 console.log(error);
             });
     } else {
-        $('#error').innerHTML = errorForm;
+        displayErrorForm(errorForm);
     }
 };
+// Display created Santa form
 const displaySanta = (santaInfo) => {
     if (santaInfo.name) {
         $('#santaName').innerHTML = santaInfo.name;
@@ -102,6 +218,7 @@ const shareSanta = () => {
     ).innerHTML = `Copied link <a href=${santaURL}>${santaURL}</a> to your clipboard, share it with your friends !`;
 };
 
+// Display existing santa form if existing otherwise display create form
 if (santaId) {
     fetch(`${baseURL}/santa/${santaId}`)
         .then((res) => res.json())

@@ -1,107 +1,108 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <link
-            rel="stylesheet"
-            href="https://cdn.simplecss.org/simple.min.css"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link
-            rel="stylesheet"
-            href="./public/assets/css/santa.css"
-            type="text/css"
-            media="screen"
-        />
-        <title>Create a Secret Santa 🎁</title>
-    </head>
-    <body>
-        <div class="container">
-            <div id="create" style="display: block">
-                <h1>Create a Secret Santa 🎁</h1>
-                <div class="text-gold italic">Christmas is coming ❄️!</div>
-                <form method="POST" id="santaForm">
-                    <p>
-                        <label>Give it a name 📍</label>
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Name (optional)"
-                        />
-                    </p>
-                    <div id="participants">
-                        <h4>Who is participating 🕺 ?</h4>
-                        <span id="participants_end"></span>
-                    </div>
-                    <button type="button" onclick="createParticipant()">
-                        Add participant
-                    </button>
-                    <p>
-                        <label>Number of presents per participant 🎁</label>
-                        <input type="number" name="numberOfPresent" />
-                    </p>
-                    <p>
-                        <label>Add a budget (optional) 🤑</label>
-                        <input type="text" name="budget" />
-                    </p>
-                    <p class="italic text-gold" id="error"></p>
-                    <div class="button-container">
-                        <button
-                            type="button"
-                            value="save"
-                            onclick="submitSantaForm()"
-                        >
-                            Create
-                        </button>
-                        <button
-                            class="alert"
-                            type="reset"
-                            onclick="this.form.reset();"
-                        >
-                            Reset
-                        </button>
-                    </div>
-                </form>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="./public/assets/css/santa.css"
+      type="text/css"
+      media="screen"
+    />
+    <title>Create a Secret Santa 🎁</title>
+  </head>
+  <body>
+    <div class="container">
+      <div id="create" style="display: block">
+        <h1>Create a Secret Santa 🎁</h1>
+        <!-- <div class="text-gold italic">Christmas is coming ❄️!</div> -->
+        <form method="POST" id="santaForm">
+          <p>
+            <label>Give it a name 📍</label>
+            <input type="text" name="name" placeholder="Name" />
+          </p>
+          <div id="participants">
+            <h4>Who is participating 🕺 ?</h4>
+            <span id="participants_end"></span>
+          </div>
+          <button type="button" onclick="createParticipant()">
+            Add participant
+          </button>
+          <p>
+            <label>Number of presents per participant 🎁</label>
+            <input type="number" name="numberOfPresent" value="1" />
+          </p>
+          <div id="presents_allocation" class="rounded-div">
+            <h4 id="whogives" style="margin-top: 0px">Who gives to whom 🎁</h4>
+            <ul id="santaPresents_0"></ul>
+          </div>
+          <div id="allocateSanta">
+            <div id="allocateSantaText" class="italic text-gold"></div>
+            <div>
+              <button
+                type="button"
+                onclick="generateAllocation()"
+                id="allocateSantaButton"
+              >
+                Allocate Santas
+              </button>
             </div>
-            <div id="view" style="display: none">
-                <h1>Ho-ho-ho Santa is coming 🎉 !</h1>
-                <div id="nameDisplay" style="display: none">
-                    <span>Welcome to Secret Santa </span>
-                    <span id="santaName" class="text-gold"></span>
-                </div>
-                <div class="santaField italic">
-                    <span>Secret Santa Id: </span
-                    ><span class="text-gold" id="santaId"></span>
-                </div>
-                <div id="budgetDisplay" style="display: none">
-                    <span>Budget 💸: </span>
-                    <span class="text-gold" id="santaBudget"></span>
-                </div>
-
-                <div>
-                    <h4>Santa's Team ☃️</h4>
-                    <div class="text-gold italic" id="nbParticipants"></div>
-                    <ul id="santaParticipants"></ul>
-                </div>
-                <div>
-                    <h4>Who gives to whom 🎁</h4>
-                    <div
-                        class="text-gold italic"
-                        id="santaNumberOfPresent"
-                    ></div>
-                    <ul id="santaPresents"></ul>
-                </div>
-                <div class="button-container">
-                    <button type="button" onclick="shareSanta()">
-                        Share Santa
-                    </button>
-                </div>
-                <div class="text-gold italic" id="shareSantaText"></div>
-            </div>
-            <script
-                type="text/javascript"
-                src="./public/assets/js/create-santa.js"
-            ></script>
+          </div>
+          <p>
+            <label>Add a budget (optional) 🤑</label>
+            <input type="text" name="budget" />
+          </p>
+          <p class="italic text-gold" id="error"></p>
+          <div class="button-container">
+            <button
+              type="button"
+              value="save"
+              class="disabled"
+              onclick="submitSantaForm()"
+            >
+              Create
+            </button>
+            <button class="alert" type="reset" onclick="this.form.reset();">
+              Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      <div id="view" style="display: none">
+        <h1>Ho-ho-ho Santa is coming 🎉 !</h1>
+        <div id="nameDisplay" style="display: none">
+          <span>Welcome to Secret Santa </span>
+          <span id="santaName" class="text-gold"></span>
         </div>
-    </body>
+        <div class="santaField italic">
+          <span>Secret Santa Id: </span
+          ><span class="text-gold" id="santaId"></span>
+        </div>
+        <div id="budgetDisplay" style="display: none">
+          <span>Budget 💸: </span>
+          <span class="text-gold" id="santaBudget"></span>
+        </div>
+
+        <div>
+          <h4>Santa's Team ☃️</h4>
+          <div class="text-gold italic" id="nbParticipants"></div>
+          <ul id="santaParticipants"></ul>
+        </div>
+        <div>
+          <h4>Who gives to whom 🎁</h4>
+          <div class="text-gold italic" id="santaNumberOfPresent"></div>
+          <ul id="santaPresents"></ul>
+        </div>
+        <div class="button-container">
+          <button type="button" onclick="shareSanta()">Share Santa</button>
+        </div>
+        <div class="text-gold italic" id="shareSantaText"></div>
+      </div>
+      <script
+        type="text/javascript"
+        src="./public/assets/js/create-santa.js"
+      ></script>
+    </div>
+  </body>
 </html>

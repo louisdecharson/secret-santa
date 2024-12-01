@@ -167,20 +167,21 @@ const createSanta = async (formData) => {
             participants: true
         }
     });
-    const participantsIds = [];
+    // mapping between name of participant and participant db id
+    const nameToId = {};
     for (const participant of createdSanta.participants) {
-        participantsIds.push(participant.id);
+        nameToId[participant.name] = participant.id;
     }
-    const presentsAllocation = allocatePresentToParticipants(
-        participantsIds,
-        parsedData.numberOfPresent
-    );
+    const presentsAllocation = JSON.parse(formData.presentsAllocation);
+    // Allocation is done with form id which are different than participant db id
+    const idToName = JSON.parse(formData.idToName);
     for (const [giver, receivers] of Object.entries(presentsAllocation)) {
         for (const receiver of receivers) {
+            // for each id, we need to map from form id to db id
             const createdPresent = await db.present.create({
                 data: {
-                    fromParticipantId: parseInt(giver),
-                    toParticipantId: parseInt(receiver),
+                    fromParticipantId: nameToId[idToName[giver]],
+                    toParticipantId: nameToId[idToName[receiver]],
                     santaId: createdSanta.id
                 }
             });
@@ -201,58 +202,3 @@ const createSanta = async (formData) => {
 function getRandomInteger(): number {
     return Math.floor(Math.random() * 1000000);
 }
-
-const allocatePresentToParticipants = (
-    participants: Array<string>,
-    numberOfPresents: number
-) => {
-    const allocation = {};
-    const receivers = [];
-    let allocationPossible = false;
-    const resetAllocation = () => {
-        receivers.length = 0;
-        for (const giver of participants) {
-            allocation[giver] = [];
-        }
-        for (let i = 0; i < numberOfPresents; i++) {
-            receivers.push(...participants.slice());
-        }
-        allocationPossible = true;
-    };
-
-    for (let i = 0; i < participants.length; i++) {
-        if (!allocationPossible) {
-            resetAllocation();
-        }
-        const giver = participants[i];
-
-        for (let j = 0; j < numberOfPresents; j++) {
-            let validReceivers = receivers.filter(
-                (receiver) =>
-                    receiver !== giver &&
-                    allocation[giver].indexOf(receiver) === -1
-            );
-
-            if (validReceivers.length === 0) {
-                // If there are no valid receivers for the current giver,
-                // reset and start again
-                j = -1;
-                allocationPossible = false;
-                break;
-            }
-
-            const randomIndex = Math.floor(
-                Math.random() * validReceivers.length
-            );
-            const receiver = validReceivers[randomIndex];
-            allocation[giver].push(receiver);
-            receivers.splice(receivers.indexOf(receiver), 1);
-        }
-        if (!allocationPossible) {
-            i = -1;
-        }
-    }
-
-    return allocation;
-};
-export { allocatePresentToParticipants };
